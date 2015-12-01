@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sc="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <me.littlecheesecake.qrcodescanner.core.CameraPreview
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <me.littlecheesecake.qrcodescanner.core.ViewFinderView
+        android:id="@+id/view_finder_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        sc:sc_mask_color="#dd3d3c75"
+        sc:sc_border_color="#cfca0a"/>
+
+</RelativeLayout>

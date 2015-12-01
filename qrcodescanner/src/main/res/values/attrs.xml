@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="sc_laser_color" format="color" />
+    <attr name="sc_mask_color" format="color" />
+    <attr name="sc_border_color" format="color" />
+    <attr name="sc_border_stroke_width" format="dimension" />
+    <attr name="sc_border_line_length" format="dimension" />
+
+    <declare-styleable name="ScannerLayout">
+        <attr name="sc_laser_color" />
+        <attr name="sc_mask_color" />
+        <attr name="sc_border_color" />
+        <attr name="sc_border_stroke_width" />
+        <attr name="sc_border_line_length" />
+    </declare-styleable>
+</resources>
