@@ -113,6 +113,10 @@ public class QRCodeScannerView extends AbstractScannerView {
         }
     }
 
+    public MultiFormatReader getMultiFormatReader() {
+        return multiFormatReader;
+    }
+
     private Collection<BarcodeFormat> getFormats() {
         if(formats == null) {
             return ALL_FORMATS;

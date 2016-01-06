@@ -15,7 +15,7 @@ public interface ViewFinder {
 
     /**
      * Provides {@link Rect} that identifies area where barcode scanner can detect visual codes
-     * <p>Note: this rect is an area representation in absolute pixel values. <br />
+     * <p>Note: this rect is an area representation in absolute pixel values.
      * For example:
      * If view's size is 1024 x 800 so framing rect might be 500x400</p>
      *

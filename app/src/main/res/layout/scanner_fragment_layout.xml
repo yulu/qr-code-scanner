@@ -19,6 +19,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
+        android:paddingBottom="40dp"
         android:layout_margin="30dp">
         <TextView
             android:layout_width="match_parent"
@@ -31,5 +32,27 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Easy access to image database on mobile"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/scan_album"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:background="#3d3c75">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/album_icon"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#4f44aa"
+            android:layout_gravity="center_vertical"
+            android:text="Album"/>
     </LinearLayout>
 </RelativeLayout>

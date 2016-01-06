@@ -3,13 +3,18 @@ package me.littlecheesecake.qrcodescanner.core;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 
 import me.littlecheesecake.qrcodescanner.R;
 
@@ -34,18 +39,13 @@ public class ViewFinderView extends View implements ViewFinder {
     private static final int PORTRAIT_MAX_FRAME_WIDTH = (int) (1080 * PORTRAIT_WIDTH_RATIO); // = 7/8 * 1080
     private static final int PORTRAIT_MAX_FRAME_HEIGHT = (int) (1920 * PORTRAIT_HEIGHT_RATIO); // = 3/8 * 1920
 
-    private static final int[] SCANNER_ALPHA = {0, 64, 128, 192, 255, 192, 128, 64};
-    private int scannerAlpha;
-    private static final int POINT_SIZE = 10;
-    private static final long ANIMATION_DELAY = 80L;
-
-    private static final String LASER_COLOR = "#ffcc0000";
     private static final String MASK_COLOR = "#60000000";
     private static final String BORDER_COLOR = "#ffafed44";
     private static final int BORDER_STROKE_WIDTH = 10;
     private static final int BORDER_LINE_LENGTH = 100;
 
-    private int mDefaultLaserColor;
+    private static final int SCANNER_RATE = 10;
+
     private int mDefaultMaskColor;
     private int mDefaultBorderColor;
     private int mDefaultBorderStrokeWidth;
@@ -55,6 +55,10 @@ public class ViewFinderView extends View implements ViewFinder {
     protected Paint mFinderMaskPaint;
     protected Paint mBorderPaint;
     protected int mBorderLineLength;
+
+    protected Bitmap scannerView;
+    protected int offset;
+    protected int minOffset;
 
     public ViewFinderView(Context context) {
         super(context);
@@ -76,7 +80,6 @@ public class ViewFinderView extends View implements ViewFinder {
 
         //set up laser paint
         mLaserPaint = new Paint();
-        mLaserPaint.setColor(mDefaultLaserColor);
         mLaserPaint.setStyle(Paint.Style.FILL);
 
         //finder mask paint
@@ -90,12 +93,13 @@ public class ViewFinderView extends View implements ViewFinder {
         mBorderPaint.setStrokeWidth(mDefaultBorderStrokeWidth);
 
         mBorderLineLength = mDefaultBorderLineLength;
+
+        scannerView = BitmapFactory.decodeResource(context.getResources(), R.drawable.scan_bar);
     }
 
     private void obtainAttributes(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ScannerLayout);
 
-        mDefaultLaserColor = ta.getColor(R.styleable.ScannerLayout_sc_laser_color, Color.parseColor(LASER_COLOR));
         mDefaultMaskColor = ta.getColor(R.styleable.ScannerLayout_sc_mask_color, Color.parseColor(MASK_COLOR));
         mDefaultBorderColor = ta.getColor(R.styleable.ScannerLayout_sc_border_color, Color.parseColor(BORDER_COLOR));
         mDefaultBorderStrokeWidth = ta.getInt(R.styleable.ScannerLayout_sc_border_stroke_width, BORDER_STROKE_WIDTH);
@@ -123,6 +127,7 @@ public class ViewFinderView extends View implements ViewFinder {
         invalidate();
     }
 
+
     public Rect getFramingRect() {
         return mFramingRect;
     }
@@ -135,7 +140,8 @@ public class ViewFinderView extends View implements ViewFinder {
 
         drawViewFinderMask(canvas);
         drawViewFinderBorder(canvas);
-//        drawLaser(canvas);
+        drawLaser(canvas);
+        invalidate();
     }
 
     public void drawViewFinderMask(Canvas canvas) {
@@ -173,17 +179,15 @@ public class ViewFinderView extends View implements ViewFinder {
     }
 
     public void drawLaser(Canvas canvas) {
-        // Draw a red "laser scanner" line through the middle to show decoding is active
-        mLaserPaint.setAlpha(SCANNER_ALPHA[scannerAlpha]);
-        scannerAlpha = (scannerAlpha + 1) % SCANNER_ALPHA.length;
-        int middle = mFramingRect.height() / 2 + mFramingRect.top;
-        canvas.drawRect(mFramingRect.left + 2, middle - 1, mFramingRect.right - 1, middle + 2, mLaserPaint);
+        offset -= SCANNER_RATE;
+        offset = offset <= 0 ? mFramingRect.bottom - mFramingRect.top : offset;
 
-        postInvalidateDelayed(ANIMATION_DELAY,
-                mFramingRect.left - POINT_SIZE,
-                mFramingRect.top - POINT_SIZE,
-                mFramingRect.right + POINT_SIZE,
-                mFramingRect.bottom + POINT_SIZE);
+        canvas.drawBitmap(scannerView, null, new Rect(
+                mFramingRect.left,
+                mFramingRect.top,
+                mFramingRect.right,
+                mFramingRect.bottom - offset
+        ), mLaserPaint);
     }
 
     @Override
@@ -208,6 +212,9 @@ public class ViewFinderView extends View implements ViewFinder {
         int leftOffset = (viewResolution.x - width) / 2;
         int topOffset = (viewResolution.y - height) / 2;
         mFramingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
+
+        minOffset = topOffset;
+        offset= height;
     }
 
     private static int findDesiredDimensionInRange(float ratio, int resolution, int hardMin, int hardMax) {
