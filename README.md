@@ -1,3 +1,11 @@
+Add the dependency
+
+```
+dependencies {
+    implementation 'me.littlecheesecake:qrcodescanner:1.0.4'
+}
+```
+
 Style Config
 
 ```
