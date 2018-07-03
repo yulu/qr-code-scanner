@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "me.littlecheesecake.scanner"
@@ -12,6 +12,10 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -20,9 +24,9 @@ android {
 }
 
 dependencies {
-//    compile 'me.littlecheesecake:qrcodescanner:1.0.1'
-    compile project(":qrcodescanner")
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
-    testCompile 'junit:junit:4.12'
+    implementation 'me.littlecheesecake:qrcodescanner:1.0.4'
+//    implementation project(":qrcodescanner")
+    implementation 'com.android.support:appcompat-v7:23.1.1'
+    implementation 'com.android.support:design:23.1.1'
+    testImplementation 'junit:junit:4.12'
 }
