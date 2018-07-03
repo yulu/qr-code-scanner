@@ -2,16 +2,16 @@ apply plugin: 'com.android.library'
 
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 3
-version = '1.0.3'
+def versionPatch = 4
+version = '1.0.4'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         minSdkVersion 11
-        targetSdkVersion 23
+        targetSdkVersion 27
         versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }

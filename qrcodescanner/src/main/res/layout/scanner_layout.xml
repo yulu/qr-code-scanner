@@ -12,8 +12,6 @@
     <me.littlecheesecake.qrcodescanner.core.ViewFinderView
         android:id="@+id/view_finder_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        sc:sc_mask_color="#dd3d3c75"
-        sc:sc_border_color="#cfca0a"/>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

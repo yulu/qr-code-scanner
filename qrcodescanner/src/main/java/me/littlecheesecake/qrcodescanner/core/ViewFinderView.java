@@ -39,22 +39,16 @@ public class ViewFinderView extends View implements ViewFinder {
     private static final int PORTRAIT_MAX_FRAME_WIDTH = (int) (1080 * PORTRAIT_WIDTH_RATIO); // = 7/8 * 1080
     private static final int PORTRAIT_MAX_FRAME_HEIGHT = (int) (1920 * PORTRAIT_HEIGHT_RATIO); // = 3/8 * 1920
 
-    private static final String MASK_COLOR = "#60000000";
-    private static final String BORDER_COLOR = "#ffafed44";
-    private static final int BORDER_STROKE_WIDTH = 10;
-    private static final int BORDER_LINE_LENGTH = 100;
+
 
     private static final int SCANNER_RATE = 10;
 
-    private int mDefaultMaskColor;
-    private int mDefaultBorderColor;
-    private int mDefaultBorderStrokeWidth;
-    private int mDefaultBorderLineLength;
+    private float mDefaultBorderStrokeWidth;
+    protected float mBorderLineLength;
 
     protected Paint mLaserPaint;
     protected Paint mFinderMaskPaint;
     protected Paint mBorderPaint;
-    protected int mBorderLineLength;
 
     protected Bitmap scannerView;
     protected int offset;
@@ -76,7 +70,14 @@ public class ViewFinderView extends View implements ViewFinder {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        obtainAttributes(context, attrs);
+        scannerView = BitmapFactory.decodeResource(context.getResources(), R.drawable.scan_bar);
+    }
+
+
+    public void setStyle(int mDefaultBorderColor,
+                         float mDefaultBorderStrokeWidth,
+                         float mDefaultBorderLineLength,
+                         int mDefaultMaskColor) {
 
         //set up laser paint
         mLaserPaint = new Paint();
@@ -92,18 +93,8 @@ public class ViewFinderView extends View implements ViewFinder {
         mBorderPaint.setStyle(Paint.Style.STROKE);
         mBorderPaint.setStrokeWidth(mDefaultBorderStrokeWidth);
 
-        mBorderLineLength = mDefaultBorderLineLength;
-
-        scannerView = BitmapFactory.decodeResource(context.getResources(), R.drawable.scan_bar);
-    }
-
-    private void obtainAttributes(Context context, AttributeSet attrs) {
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ScannerLayout);
-
-        mDefaultMaskColor = ta.getColor(R.styleable.ScannerLayout_sc_mask_color, Color.parseColor(MASK_COLOR));
-        mDefaultBorderColor = ta.getColor(R.styleable.ScannerLayout_sc_border_color, Color.parseColor(BORDER_COLOR));
-        mDefaultBorderStrokeWidth = ta.getInt(R.styleable.ScannerLayout_sc_border_stroke_width, BORDER_STROKE_WIDTH);
-        mDefaultBorderLineLength = ta.getInt(R.styleable.ScannerLayout_sc_border_line_length, BORDER_LINE_LENGTH);
+        this.mBorderLineLength = mDefaultBorderLineLength;
+        this.mDefaultBorderStrokeWidth = mDefaultBorderStrokeWidth;
     }
 
     public void setLaserColor(int laserColor) {
@@ -155,8 +146,8 @@ public class ViewFinderView extends View implements ViewFinder {
     }
 
     public void drawViewFinderBorder(Canvas canvas) {
-        int width = mDefaultBorderStrokeWidth;
-        int halfWidth = width / 2;
+        float width = mDefaultBorderStrokeWidth;
+        float halfWidth = width / 2;
         canvas.drawLine(mFramingRect.left - halfWidth, mFramingRect.top - width,
                 mFramingRect.left - halfWidth, mFramingRect.top + mBorderLineLength - width, mBorderPaint);
         canvas.drawLine(mFramingRect.left - width, mFramingRect.top - halfWidth,

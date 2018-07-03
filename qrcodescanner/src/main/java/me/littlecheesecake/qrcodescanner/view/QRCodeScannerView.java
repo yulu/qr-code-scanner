@@ -2,6 +2,8 @@ package me.littlecheesecake.qrcodescanner.view;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.util.AttributeSet;
@@ -21,8 +23,10 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import me.littlecheesecake.qrcodescanner.R;
 import me.littlecheesecake.qrcodescanner.core.AbstractScannerView;
 import me.littlecheesecake.qrcodescanner.core.DisplayUtils;
+import me.littlecheesecake.qrcodescanner.core.ViewFinderView;
 
 /**
  * Created by yulu on 1/12/15.
@@ -39,6 +43,17 @@ public class QRCodeScannerView extends AbstractScannerView {
     public static final List<BarcodeFormat> ALL_FORMATS = new ArrayList<>();
     private List<BarcodeFormat> formats;
     private ResultHandler resultHandler;
+    private ViewFinderView viewFinderView;
+
+    private int mDefaultMaskColor;
+    private int mDefaultBorderColor;
+    private float mDefaultBorderStrokeWidth;
+    private float mDefaultBorderLineLength;
+
+    private static final String MASK_COLOR = "#60000000";
+    private static final String BORDER_COLOR = "#ffafed44";
+    private static final int BORDER_STROKE_WIDTH = 10;
+    private static final int BORDER_LINE_LENGTH = 100;
 
     static {
         ALL_FORMATS.add(BarcodeFormat.QR_CODE);
@@ -46,24 +61,36 @@ public class QRCodeScannerView extends AbstractScannerView {
 
     public QRCodeScannerView(Context context) {
         super(context);
-        initMultiFormatReader();
+        initMultiFormatReader(context, null);
     }
 
     public QRCodeScannerView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-        initMultiFormatReader();
+        initMultiFormatReader(context, attributeSet);
     }
 
     public QRCodeScannerView(Context context, AttributeSet attributeSet, int defStyleAttr) {
         super(context, attributeSet);
-        initMultiFormatReader();
+        initMultiFormatReader(context, attributeSet);
     }
 
-    private void initMultiFormatReader() {
+    private void initMultiFormatReader(Context context, AttributeSet attrs) {
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ScannerLayout);
+
+        mDefaultMaskColor = ta.getColor(R.styleable.ScannerLayout_sc_mask_color, Color.parseColor(MASK_COLOR));
+        mDefaultBorderColor = ta.getColor(R.styleable.ScannerLayout_sc_border_color, Color.parseColor(BORDER_COLOR));
+        mDefaultBorderStrokeWidth = ta.getDimension(R.styleable.ScannerLayout_sc_border_stroke_width, BORDER_STROKE_WIDTH);
+        mDefaultBorderLineLength = ta.getDimension(R.styleable.ScannerLayout_sc_border_line_length, BORDER_LINE_LENGTH);
+
         Map<DecodeHintType, Object> hints = new EnumMap<>(DecodeHintType.class);
         hints.put(DecodeHintType.POSSIBLE_FORMATS, getFormats());
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
+
+        viewFinderView = findViewById(R.id.view_finder_view);
+        viewFinderView.setStyle(
+                mDefaultBorderColor, mDefaultBorderStrokeWidth, mDefaultBorderLineLength, mDefaultMaskColor
+        );
     }
 
     @Override
